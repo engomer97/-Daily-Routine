@@ -24,6 +24,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{font-family:'Tajawal',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .25s,color .25s}
+  body.welcome-open{overflow:hidden}
   button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   input{font:inherit;color:inherit}
   svg{display:block}
@@ -51,6 +52,97 @@
   .btn-ok{background:var(--ok);color:#fff}
   .btn-danger{background:var(--no);color:#fff}
   .btn-lg{padding:15px 28px;font-size:17px;border-radius:14px}
+
+  /* ===== Welcome ===== */
+  .welcome{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;
+    background:
+      radial-gradient(900px 500px at 80% 10%,rgba(124,108,245,.45),transparent 60%),
+      radial-gradient(700px 500px at 10% 90%,rgba(236,72,153,.35),transparent 60%),
+      linear-gradient(135deg,#5b4bdb,#7c6cf5);
+    transition:opacity .45s ease,visibility .45s ease}
+  .welcome.hide{opacity:0;visibility:hidden;pointer-events:none}
+  .welcome-card{position:relative;background:var(--surface);border-radius:28px;padding:46px 36px;text-align:center;max-width:540px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:pop .5s ease;overflow:hidden}
+  @keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+  .welcome-card .wel-emoji{font-size:66px;line-height:1;margin-bottom:8px;display:inline-block;animation:bounce 2s infinite}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .welcome-card h1{font-size:40px;font-weight:800;margin-bottom:10px;background:linear-gradient(135deg,var(--primary),#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .welcome-card p{color:var(--muted);font-size:19px;line-height:1.9;margin-bottom:26px}
+  .welcome-float{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .welcome-float span{position:absolute;font-size:26px;opacity:.35;animation:floaty 6s infinite ease-in-out}
+  .welcome-float span:nth-child(1){top:12%;right:8%;animation-delay:0s}
+  .welcome-float span:nth-child(2){top:72%;right:12%;animation-delay:1.2s}
+  .welcome-float span:nth-child(3){top:18%;left:9%;animation-delay:.6s}
+  .welcome-float span:nth-child(4){top:76%;left:11%;animation-delay:1.8s}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-14px) rotate(8deg)}}
+
+  /* ===== شرائط الأذكار المتحركة ===== */
+  .zikr-ticker{
+    position:sticky; z-index:45;
+    overflow:hidden; height:46px;
+    display:flex; align-items:center;
+    box-shadow:0 4px 14px rgba(20,24,60,.12);
+    direction:ltr;
+  }
+  .zikr-ticker.t-azkar{
+    top:68px;
+    background:linear-gradient(90deg,var(--primary),var(--primary2));
+    color:#fff;
+    border-bottom:1px solid rgba(255,255,255,.15);
+  }
+  .zikr-ticker.t-salat{
+    top:114px;
+    background:linear-gradient(90deg,#0f8f5a,#16a34a,#22c55e);
+    color:#fff;
+    border-bottom:1px solid rgba(255,255,255,.15);
+  }
+  .zikr-ticker::before,
+  .zikr-ticker::after{
+    content:''; position:absolute; top:0; bottom:0; width:60px; pointer-events:none; z-index:2;
+  }
+  .zikr-ticker.t-azkar::before{left:0;background:linear-gradient(90deg,var(--primary),transparent)}
+  .zikr-ticker.t-azkar::after{right:0;background:linear-gradient(-90deg,var(--primary2),transparent)}
+  .zikr-ticker.t-salat::before{left:0;background:linear-gradient(90deg,#0f8f5a,transparent)}
+  .zikr-ticker.t-salat::after{right:0;background:linear-gradient(-90deg,#22c55e,transparent)}
+
+  /* شريط الأذكار: بطيء جداً = 200s */
+  .zikr-ticker-track{
+    display:flex; gap:70px; white-space:nowrap;
+    will-change:transform;
+    padding-inline-start:20px;
+    animation:zikrScroll 200s linear infinite;
+  }
+  /* شريط الصلاة على النبي: متوسط = 75s */
+  .zikr-ticker-track.reverse{
+    animation:zikrScrollRev 75s linear infinite;
+  }
+  .zikr-ticker:hover .zikr-ticker-track{animation-play-state:paused}
+
+  .zikr-ticker-track span{
+    direction:rtl;
+    font-weight:700; font-size:16px;
+    display:inline-flex; align-items:center; gap:10px;
+    color:#fff;
+  }
+  .zikr-ticker.t-azkar .zikr-ticker-track span::before{
+    content:'﷽'; font-size:20px; opacity:.7; margin-inline-end:4px;
+  }
+  .zikr-ticker.t-salat .zikr-ticker-track span::before{
+    content:'ﷺ'; font-size:20px; opacity:.85; margin-inline-end:4px;
+  }
+  .zikr-ticker-track span em{
+    font-style:normal; opacity:.85; font-size:12px;
+    background:rgba(255,255,255,.18); padding:2px 8px; border-radius:99px;
+    margin-inline-start:8px;
+  }
+
+  @keyframes zikrScroll{
+    from{transform:translateX(0)}
+    to{transform:translateX(-50%)}
+  }
+  @keyframes zikrScrollRev{
+    from{transform:translateX(-50%)}
+    to{transform:translateX(0)}
+  }
 
   /* ===== Hero ===== */
   .hero{position:relative;overflow:hidden;padding:64px 0 72px;background:
@@ -93,8 +185,8 @@
 
   /* ===== App ===== */
   .app{padding:56px 0 70px;scroll-margin-top:70px}
-  .tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);padding:6px;border-radius:16px;width:fit-content;margin:0 auto 26px;box-shadow:var(--shadow)}
-  .tab{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;font-weight:700;color:var(--muted);transition:.15s}
+  .tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);padding:6px;border-radius:16px;width:fit-content;margin:0 auto 26px;box-shadow:var(--shadow);flex-wrap:wrap;justify-content:center}
+  .tab{display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;font-weight:700;color:var(--muted);transition:.15s}
   .tab .n{width:24px;height:24px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;font-size:12px}
   .tab.active{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff}
   .tab.active .n{background:rgba(255,255,255,.25);color:#fff}
@@ -145,6 +237,41 @@
   .foot-cta .sum{color:var(--muted)}
   .foot-cta .sum b{color:var(--text)}
 
+  /* ===== Azkar ===== */
+  .azkar-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:start}
+  .zikr-box{background:linear-gradient(135deg,var(--primary-soft),color-mix(in srgb,var(--primary-soft) 55%,var(--surface)));border:1.5px solid var(--border);border-radius:18px;padding:26px 22px;min-height:190px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:14px;margin-bottom:16px}
+  .zikr-text{font-size:24px;font-weight:800;line-height:2;color:var(--text);animation:fade .35s}
+  .zikr-src{color:var(--muted);font-size:14px;font-weight:700}
+  .zikr-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .zikr-actions .btn{flex:1;min-width:150px}
+  .salat-count{text-align:center;color:var(--muted);font-size:14px;margin-top:10px;font-weight:700}
+  .salat-count b{color:var(--primary);font-size:18px}
+
+  .prayer-list{display:grid;gap:8px;margin:14px 0}
+  .prayer-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;font-weight:700;transition:.2s}
+  .prayer-row b{font-size:18px;color:var(--primary);font-variant-numeric:tabular-nums;direction:ltr;letter-spacing:.5px}
+  .prayer-row.next{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;border-color:var(--primary);box-shadow:0 8px 20px rgba(91,75,219,.3)}
+  .prayer-row.next b{color:#fff}
+  .prayer-row .lbl{display:flex;align-items:center;gap:8px}
+  .prayer-row .tag{font-size:11px;background:rgba(255,255,255,.25);padding:2px 8px;border-radius:99px;margin-inline-start:8px}
+
+  .switch-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;font-weight:700;background:var(--surface2);transition:.2s}
+  .switch-row input{width:20px;height:20px;accent-color:var(--primary);cursor:pointer}
+  .switch-row.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+  .hint{color:var(--muted);font-size:13px;margin-top:10px;line-height:1.7}
+  .row-btns{display:flex;gap:8px;flex-wrap:wrap}
+
+  /* ===== Prayer Alert Banner ===== */
+  .prayer-alert{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-160%);z-index:400;
+    background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
+    padding:16px 26px;border-radius:18px;box-shadow:0 20px 50px rgba(91,75,219,.5);
+    display:flex;align-items:center;gap:14px;font-weight:800;font-size:18px;
+    transition:transform .55s cubic-bezier(.2,.9,.3,1.2);max-width:92vw}
+  .prayer-alert.show{transform:translateX(-50%) translateY(0)}
+  .prayer-alert .ic{font-size:30px;animation:bounce 1.5s infinite}
+  .prayer-alert button{color:#fff;opacity:.85;font-size:22px;line-height:1;padding:4px 8px;border-radius:8px}
+  .prayer-alert button:hover{background:rgba(255,255,255,.2);opacity:1}
+
   /* ===== Sheet panel ===== */
   .toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-bottom:16px}
   .toolbar .grp{display:flex;gap:8px;flex-wrap:wrap}
@@ -154,7 +281,6 @@
   .dot.ok{background:var(--ok-soft);color:var(--ok)} .dot.no{background:var(--no-soft);color:var(--no)} .dot.em{border:2px solid var(--border)}
   .sheet-holder{overflow-x:auto;padding-bottom:6px}
 
-  /* الورقة (ثابتة الألوان لتبقى مناسبة للطباعة) */
   .sheet{position:relative;background:#fdf6ee;width:100%;max-width:794px;margin:0 auto;padding:18px 0 0;box-shadow:0 14px 50px rgba(20,24,60,.2);overflow:hidden;color:#222;border-radius:6px}
   .sheet-top{position:relative;height:118px;display:flex;align-items:center;justify-content:center}
   .balloons{position:absolute;right:14px;top:6px;font-size:46px;line-height:1}
@@ -228,9 +354,11 @@
     .grid2{grid-template-columns:1fr}
     .stats-top{grid-template-columns:repeat(2,1fr)}
     .stats-grid{grid-template-columns:1fr}
+    .azkar-grid{grid-template-columns:1fr}
+    .zikr-text{font-size:20px}
   }
   @media (max-width:720px){
-    .links{display:none;position:absolute;top:68px;inset-inline:0;background:var(--surface);flex-direction:column;padding:12px 20px;border-bottom:1px solid var(--border);margin:0}
+    .links{display:none;position:absolute;top:68px;inset-inline:0;background:var(--surface);flex-direction:column;padding:12px 20px;border-bottom:1px solid var(--border);margin:0;z-index:60}
     .links.open{display:flex}
     .burger{display:grid}
     .nav .btn{display:none}
@@ -239,7 +367,9 @@
     .tab.active .t{display:inline}
     .toolbar{justify-content:center}
     .legend{display:none}
-    /* تصغير الورقة على الجوال */
+    .welcome-card{padding:36px 22px}
+    .welcome-card h1{font-size:30px}
+    .welcome-card p{font-size:16px}
     .sheet-top{height:84px}
     .balloons{font-size:28px}.kite{font-size:26px}.kid{font-size:32px}.kid small{font-size:16px}
     .name-line{font-size:17px}.name-line input{width:140px;font-size:15px}
@@ -251,6 +381,17 @@
     .box{border-radius:7px;border-width:2px;font-size:18px}
     .total{font-size:16px}.deco-b{font-size:22px;gap:6px}.crown{font-size:10px}.crown .c{font-size:24px}
     .stars-r{font-size:22px}.sheet-bottom{padding:10px 12px;min-height:80px}
+    /* شرائط الجوال */
+    .zikr-ticker{height:40px}
+    .zikr-ticker.t-azkar{top:68px}
+    .zikr-ticker.t-salat{top:108px}
+    .zikr-ticker-track span{font-size:14px}
+    .zikr-ticker.t-azkar .zikr-ticker-track span::before,
+    .zikr-ticker.t-salat .zikr-ticker-track span::before{font-size:16px}
+    /* الأذكار بطيء جداً على الجوال */
+    .zikr-ticker-track{animation-duration:150s}
+    /* الصلاة على النبي متوسط */
+    .zikr-ticker-track.reverse{animation-duration:55s}
   }
   @media (max-width:480px){
     .f-grid{grid-template-columns:1fr}
@@ -261,7 +402,7 @@
   @page{size:A4 portrait;margin:0}
   @media print{
     body{background:#fff}
-    .nav,.hero,.features,.tabs,.toolbar,.footer,.toasts,.modal-bg,.panel:not(#p-sheet){display:none!important}
+    .nav,.hero,.features,.tabs,.toolbar,.footer,.toasts,.modal-bg,.welcome,.prayer-alert,.zikr-ticker,.panel:not(#p-sheet){display:none!important}
     .app{padding:0}.container{max-width:none;padding:0}
     #p-sheet{display:block!important}
     .sheet{box-shadow:none;max-width:none;width:100%;border-radius:0}
@@ -270,6 +411,17 @@
 </style>
 </head>
 <body>
+
+<!-- ================= Welcome Overlay ================= -->
+<div class="welcome" id="welcome">
+  <div class="welcome-card">
+    <div class="welcome-float"><span>✨</span><span>🌟</span><span>🤲</span><span>📚</span></div>
+    <div class="wel-emoji">👋</div>
+    <h1>هلاا بك</h1>
+    <p>يلا نعمل جدول ننظم بيه يومنا<br>ونتمنى الالتزام 🤲</p>
+    <button class="btn btn-primary btn-lg" id="welcomeBtn">يلا نبدأ ✨</button>
+  </div>
+</div>
 
 <!-- ================= Navbar ================= -->
 <header class="nav">
@@ -284,6 +436,7 @@
       <a data-go="home" class="active">الرئيسية</a>
       <a data-go="features">المميزات</a>
       <a data-go="tasks">مهامي</a>
+      <a data-go="azkar">الأذكار</a>
       <a data-go="sheet">الجدول</a>
       <a data-go="stats">الإحصائيات</a>
     </nav>
@@ -296,6 +449,16 @@
     <button class="icon-btn burger" id="burger"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
 </header>
+
+<!-- ================= شريط الأذكار (بطيء جداً) ================= -->
+<div class="zikr-ticker t-azkar">
+  <div class="zikr-ticker-track" id="zikrTrackAzkar"></div>
+</div>
+
+<!-- ================= شريط الصلاة على النبي ================= -->
+<div class="zikr-ticker t-salat">
+  <div class="zikr-ticker-track reverse" id="zikrTrackSalat"></div>
+</div>
 
 <!-- ================= Hero ================= -->
 <section class="hero" id="home">
@@ -345,6 +508,7 @@
       <button class="tab active" data-go="tasks"><span class="n">1</span><span class="t">تسجيل المهام</span></button>
       <button class="tab" data-go="sheet"><span class="n">2</span><span class="t">الجدول</span></button>
       <button class="tab" data-go="stats"><span class="n">3</span><span class="t">الإحصائيات</span></button>
+      <button class="tab" data-go="azkar"><span class="n">4</span><span class="t">الأذكار والصلوات</span></button>
     </div>
 
     <!-- ===== 1) المهام ===== -->
@@ -442,12 +606,58 @@
         <div class="card"><h3>حسب اليوم</h3><p class="desc">عدد المهام المنجزة في كل يوم.</p><div class="bars" id="barsDay"></div></div>
       </div>
     </section>
+
+    <!-- ===== 4) الأذكار ===== -->
+    <section class="panel" id="p-azkar">
+      <div class="azkar-grid">
+        <div class="card">
+          <h3>📿 ذكر اليوم</h3>
+          <p class="desc">كل مرة يظهر لك ذكر جديد — اجعله ورداً ليومك.</p>
+          <div class="zikr-box">
+            <div class="zikr-text" id="zikrText">—</div>
+            <div class="zikr-src" id="zikrSrc"></div>
+          </div>
+          <div class="zikr-actions">
+            <button class="btn btn-primary" id="nextZikr">ذكر آخر 🔄</button>
+            <button class="btn btn-ghost" id="salatBtn">ﷺ الصلاة على النبي</button>
+          </div>
+          <div class="salat-count">صلّيت على النبي ﷺ <b id="salatCount">٠</b> مرة</div>
+        </div>
+
+        <div class="card">
+          <h3>🕌 مواقيت الصلاة والتنبيه</h3>
+          <p class="desc">جِب المواقيت تلقائياً من موقعك أو من اسم مدينتك.</p>
+          <div class="row-btns" style="margin-bottom:10px">
+            <button class="btn btn-primary" id="geoBtn">📍 استخدم موقعي</button>
+          </div>
+          <div class="add-row">
+            <input class="input" id="cityInput" placeholder="مثال: Mecca / Cairo / الرياض">
+            <button class="btn btn-ghost" id="cityBtn">جلب</button>
+          </div>
+          <div class="prayer-list" id="prayerList">
+            <div class="empty">لم يتم جلب المواقيت بعد</div>
+          </div>
+          <label class="switch-row" id="notifyRow">
+            <input type="checkbox" id="notifyToggle">
+            <span>🔔 تفعيل تنبيه الصلاة (إشعار + صوت)</span>
+          </label>
+          <div class="hint" id="prayerHint">ملاحظة: إشعارات النظام تعمل فقط عند فتح الصفحة عبر HTTPS أو localhost. في كل الأحوال سيظهر تنبيه داخل الصفحة مع صوت.</div>
+        </div>
+      </div>
+    </section>
   </div>
 </main>
 
 <footer class="footer">
   <div class="container"><div><b style="color:var(--text)">مهامي</b> — منظّم المهام اليومية</div><div>بياناتك تُحفظ في متصفحك فقط ولا تُرسل لأي جهة.</div></div>
 </footer>
+
+<!-- Prayer Alert Banner -->
+<div class="prayer-alert" id="prayerAlert">
+  <span class="ic">🕌</span>
+  <span id="prayerAlertText">حان وقت الصلاة</span>
+  <button onclick="document.getElementById('prayerAlert').classList.remove('show')">✕</button>
+</div>
 
 <div class="toasts" id="toasts"></div>
 <div class="modal-bg" id="modalBg"><div class="modal"><h4 id="mTitle"></h4><p id="mText"></p><div class="row"><button class="btn btn-ghost" id="mNo">إلغاء</button><button class="btn btn-danger" id="mYes">تأكيد</button></div></div></div>
@@ -463,14 +673,75 @@
     {t:'استيقظ مبكراً',e:'🛏️'},{t:'أغسل أسناني',e:'🪥'},{t:'أرتب غرفتي',e:'🧺'},
     {t:'الصلاة في وقتها',e:'🕌'},{t:'الأكل الصحي',e:'🥗'},{t:'المذاكرة والقرآن',e:'📖'},{t:'طاعة الوالدين',e:'👨‍👩‍👧'}
   ];
+
+  /* ====== أذكار ====== */
+  const AZKAR=[
+    {t:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ',s:'متفق عليه'},
+    {t:'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',s:'رواه البخاري ومسلم'},
+    {t:'أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ',s:'ذكر'},
+    {t:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',s:'كنز من كنوز الجنة'},
+    {t:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',s:'الفاتحة ٢'},
+    {t:'حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ',s:'التوبة ١٢٩'},
+    {t:'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',s:'البقرة ٢٠١'},
+    {t:'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ',s:'رواه أبو داود'},
+    {t:'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ',s:'رواه الترمذي'},
+    {t:'سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ',s:'الباقيات الصالحات'},
+    {t:'لَا إِلَهَ إِلَّا اللَّهُ',s:'أفضل الذكر'},
+    {t:'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى',s:'رواه مسلم'},
+    {t:'رَبِّ زِدْنِي عِلْمًا',s:'طه ١١٤'},
+    {t:'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي',s:'طه ٢٥-٢٦'},
+    {t:'اللَّهُمَّ بَارِكْ لَنَا فِي هَذَا الْيَوْمِ وَاجْعَلْهُ يَوْمَ خَيْرٍ وَبَرَكَةٍ',s:'دعاء'},
+    {t:'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ',s:'رواه البخاري'},
+    {t:'رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا',s:'آل عمران ٨'},
+    {t:'اللَّهُمَّ اجْعَلْنِي مِنَ التَّوَّابِينَ وَاجْعَلْنِي مِنَ الْمُتَطَهِّرِينَ',s:'رواه الترمذي'},
+    {t:'سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',s:'ذكر'},
+    {t:'اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ',s:'رواه الترمذي'},
+    {t:'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',s:'آل عمران ١٧٣'},
+    {t:'اللَّهُمَّ ثَبِّتْ قَلْبِي عَلَى دِينِكَ',s:'دعاء'},
+    {t:'رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي',s:'إبراهيم ٤٠'},
+    {t:'اللَّهُمَّ إِنَّكَ عَفُوٌّ كَرِيمٌ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',s:'رواه الترمذي'},
+    {t:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ',s:'رواه مسلم'},
+    {t:'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ',s:'رواه أبو داود'},
+    {t:'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ',s:'رواه مسلم'}
+  ];
+  const SALAT=[
+    'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ',
+    'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ',
+    'صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ',
+    'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، وَبَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ',
+    'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلِّمْ',
+    'صَلَّى اللَّهُ عَلَى مُحَمَّدٍ وَآلِهِ وَصَحْبِهِ أَجْمَعِينَ'
+  ];
+
+  /* ====== مواقيت الصلاة ====== */
+  const PRAYERS=[
+    {key:'Fajr',   ar:'الفجر',   emoji:'🌅'},
+    {key:'Dhuhr',  ar:'الظهر',   emoji:'☀️'},
+    {key:'Asr',    ar:'العصر',   emoji:'🌤️'},
+    {key:'Maghrib',ar:'المغرب',  emoji:'🌇'},
+    {key:'Isha',   ar:'العشاء',  emoji:'🌙'}
+  ];
+  const clean=t=>String(t||'').trim().split(' ')[0];
+  const todayStr=()=>new Date().toDateString();
+
   const KEY='mahami-app-v2';
   let S; try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
   if(!S) S={name:'',tasks:JSON.parse(JSON.stringify(DEFAULT_TASKS)),days:[0,1,2,3,4,5,6],marks:{},theme:'light'};
+  if(!S.prayers) S.prayers={enabled:false,times:null,address:'',date:'',lastNotified:''};
+  if(typeof S.salatCount!=='number') S.salatCount=0;
   const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
   const $=id=>document.getElementById(id);
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const nAr=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
   let pickedEmoji='⭐';
+  let zikrIdx=Math.floor(Math.random()*AZKAR.length);
+
+  /* ---------- Welcome ---------- */
+  document.body.classList.add('welcome-open');
+  $('welcomeBtn').onclick=()=>{
+    $('welcome').classList.add('hide');
+    document.body.classList.remove('welcome-open');
+  };
 
   /* ---------- Theme ---------- */
   function applyTheme(){
@@ -509,10 +780,11 @@
     document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.go===where));
     if(where==='sheet'){$('sheetName').value=S.name||'';buildGrid()}
     if(where==='stats')renderStats();
+    if(where==='azkar'){renderAzkar();renderPrayers()}
     setActive(where);
     $('app').scrollIntoView({behavior:'smooth'});
   }
-  function setActive(w){document.querySelectorAll('.links a').forEach(a=>a.classList.toggle('active',a.dataset.go===w||(w==='features'&&false)))}
+  function setActive(w){document.querySelectorAll('.links a').forEach(a=>a.classList.toggle('active',a.dataset.go===w))}
   document.addEventListener('click',e=>{const el=e.target.closest('[data-go]');if(el)go(el.dataset.go)});
   $('burger').onclick=()=>$('links').classList.toggle('open');
 
@@ -664,14 +936,12 @@
     $('ringT').textContent=nAr(pct)+'٪';
     $('ringC').style.strokeDashoffset=502.65*(1-pct/100);
     $('msg').textContent=!c.max?'أضف مهاماً لتبدأ':pct===100?'🎉 ما شاء الله! أنجزت كل المهام':pct>=70?'👏 أداء رائع، استمر!':pct>=40?'👍 بداية جيدة، واصل التقدم':c.ok+c.no===0?'ابدأ بتحديد خانات الجدول':'💪 لا تستسلم، غداً أفضل';
-    // by task
     const bt=$('barsTask');bt.innerHTML='';
     S.tasks.forEach((k,ti)=>{
       let ok=0;S.days.forEach(d=>{if((S.marks[ti+'-'+d]||0)===1)ok++});
       const p=S.days.length?ok/S.days.length*100:0;
       bt.insertAdjacentHTML('beforeend',`<div class="bar-row"><div class="top"><span>${esc(k.e||'⭐')} ${esc(k.t)}</span><span>${nAr(ok)} / ${nAr(S.days.length)}</span></div><div class="track"><i style="width:${p}%"></i></div></div>`);
     });
-    // by day
     const bd=$('barsDay');bd.innerHTML='';let best=-1,bestName='—';
     S.days.forEach(d=>{
       let ok=0;S.tasks.forEach((_,ti)=>{if((S.marks[ti+'-'+d]||0)===1)ok++});
@@ -682,9 +952,200 @@
     $('sBest').textContent=bestName;
   }
 
+  /* ---------- Azkar ---------- */
+  function renderAzkar(){
+    const z=AZKAR[zikrIdx];
+    const t=$('zikrText'),s=$('zikrSrc');
+    t.style.animation='none';void t.offsetWidth;t.style.animation='fade .35s';
+    t.textContent=z.t;s.textContent=z.s||'';
+    $('salatCount').textContent=nAr(S.salatCount||0);
+  }
+  $('nextZikr').onclick=()=>{
+    let n;do{n=Math.floor(Math.random()*AZKAR.length)}while(n===zikrIdx&&AZKAR.length>1);
+    zikrIdx=n;renderAzkar();
+  };
+  $('salatBtn').onclick=()=>{
+    const text=SALAT[Math.floor(Math.random()*SALAT.length)];
+    const t=$('zikrText'),s=$('zikrSrc');
+    t.style.animation='none';void t.offsetWidth;t.style.animation='fade .35s';
+    t.textContent=text;s.textContent='صلاة على النبي ﷺ';
+    S.salatCount=(S.salatCount||0)+1;save();
+    $('salatCount').textContent=nAr(S.salatCount);
+    beep(660,.25);
+    toast('اللهم صل وسلم على نبينا محمد ﷺ','💚');
+  };
+
+  /* ---------- Prayer Times ---------- */
+  async function fetchByAddress(addr){
+    const r=await fetch(`https://api.aladhan.com/v1/timingsByAddress?address=${encodeURIComponent(addr)}&method=5`);
+    const d=await r.json();
+    if(d.code!==200||!d.data) throw new Error('bad');
+    return d.data.timings;
+  }
+  async function fetchByCoords(lat,lon){
+    const r=await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=5`);
+    const d=await r.json();
+    if(d.code!==200||!d.data) throw new Error('bad');
+    return d.data.timings;
+  }
+  async function saveTimes(times,label){
+    S.prayers.times=times;S.prayers.address=label;S.prayers.date=todayStr();S.prayers.lastNotified='';
+    save();renderPrayers();
+  }
+  function nextPrayerKey(){
+    if(!S.prayers.times)return null;
+    const now=new Date(),mins=now.getHours()*60+now.getMinutes();
+    let best=null,bestDiff=1e9;
+    PRAYERS.forEach(p=>{
+      const t=clean(S.prayers.times[p.key]);if(!t)return;
+      const [h,m]=t.split(':').map(Number);
+      let diff=h*60+m-mins; if(diff<0)diff+=1440;
+      if(diff<bestDiff){bestDiff=diff;best=p.key}
+    });
+    return best;
+  }
+  function renderPrayers(){
+    const box=$('prayerList');
+    if(!S.prayers.times){box.innerHTML='<div class="empty">لم يتم جلب المواقيت بعد</div>';return}
+    const nextK=nextPrayerKey();
+    box.innerHTML='';
+    PRAYERS.forEach(p=>{
+      const t=clean(S.prayers.times[p.key]);
+      const isNext=p.key===nextK;
+      box.insertAdjacentHTML('beforeend',
+        `<div class="prayer-row${isNext?' next':''}">
+          <span class="lbl">${p.emoji} ${p.ar}${isNext?'<span class="tag">القادمة</span>':''}</span>
+          <b>${t||'—'}</b>
+        </div>`);
+    });
+    $('cityInput').value=S.prayers.address||'';
+    $('notifyToggle').checked=!!S.prayers.enabled;
+    $('notifyRow').classList.toggle('on',!!S.prayers.enabled);
+  }
+  $('geoBtn').onclick=async()=>{
+    if(!navigator.geolocation){toast('المتصفح لا يدعم تحديد الموقع','⚠️');return}
+    const btn=$('geoBtn'),old=btn.innerHTML;btn.innerHTML='⏳ جارِ التحديد...';btn.disabled=true;
+    navigator.geolocation.getCurrentPosition(async pos=>{
+      try{
+        const t=await fetchByCoords(pos.coords.latitude,pos.coords.longitude);
+        await saveTimes(t,'موقعي الحالي');
+        toast('تم جلب مواقيت الصلاة','🕌');
+      }catch(e){toast('تعذر جلب المواقيت','⚠️')}
+      finally{btn.innerHTML=old;btn.disabled=false}
+    },()=>{toast('تم رفض الوصول للموقع','⚠️');btn.innerHTML=old;btn.disabled=false},{timeout:12000});
+  };
+  $('cityBtn').onclick=async()=>{
+    const v=$('cityInput').value.trim();
+    if(!v){$('cityInput').focus();return}
+    const btn=$('cityBtn'),old=btn.innerHTML;btn.innerHTML='⏳...';btn.disabled=true;
+    try{
+      const t=await fetchByAddress(v);
+      await saveTimes(t,v);
+      toast('تم جلب المواقيت لـ '+v,'🕌');
+    }catch(e){toast('تعذر جلب المواقيت، تأكد من اسم المدينة','⚠️')}
+    finally{btn.innerHTML=old;btn.disabled=false}
+  };
+  $('notifyToggle').onchange=async e=>{
+    if(e.target.checked){
+      if(!('Notification' in window)){toast('المتصفح لا يدعم إشعارات النظام','⚠️')}
+      else if(Notification.permission!=='granted'){
+        try{const perm=await Notification.requestPermission();if(perm!=='granted')toast('لم يتم منح إذن الإشعارات — التنبيه داخل الصفحة سيظل يعمل','🔕')}
+        catch(_){}
+      }
+      S.prayers.enabled=true;save();
+      $('notifyRow').classList.add('on');
+      toast('تم تفعيل تنبيهات الصلاة','🔔');
+      beep(880,.2);
+    } else {
+      S.prayers.enabled=false;save();
+      $('notifyRow').classList.remove('on');
+      toast('تم إيقاف تنبيهات الصلاة','🔕');
+    }
+  };
+
+  /* ---------- Beep & Alert ---------- */
+  let audioCtx=null;
+  function beep(freq=880,dur=.4){
+    try{
+      audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.connect(g);g.connect(audioCtx.destination);
+      o.type='sine';o.frequency.value=freq;
+      g.gain.setValueAtTime(.0001,audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.25,audioCtx.currentTime+.05);
+      g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+dur);
+      o.start();o.stop(audioCtx.currentTime+dur+.05);
+    }catch(e){}
+  }
+  let alertTimer=null;
+  function showPrayerAlert(p){
+    $('prayerAlertText').textContent=`${p.emoji} حان وقت صلاة ${p.ar} — الله أكبر`;
+    $('prayerAlert').classList.add('show');
+    clearTimeout(alertTimer);
+    alertTimer=setTimeout(()=>$('prayerAlert').classList.remove('show'),18000);
+  }
+  function firePrayer(p){
+    showPrayerAlert(p);
+    beep(880,.5);setTimeout(()=>beep(660,.5),700);setTimeout(()=>beep(990,.6),1400);
+    toast(`حان وقت صلاة ${p.ar}`,'🕌');
+    if('Notification' in window && Notification.permission==='granted'){
+      try{new Notification(`${p.emoji} حان وقت صلاة ${p.ar}`,{body:'الله أكبر — قم إلى صلاتك 🤲',tag:'prayer-'+p.key});}catch(_){}
+    }
+  }
+  function checkPrayers(){
+    if(!S.prayers.enabled||!S.prayers.times)return;
+    const now=new Date();
+    const hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+    const id=todayStr()+'-';
+    PRAYERS.forEach(p=>{
+      const t=clean(S.prayers.times[p.key]);
+      if(t===hm){
+        const key=id+p.key;
+        if(S.prayers.lastNotified===key)return;
+        S.prayers.lastNotified=key;save();
+        firePrayer(p);
+      }
+    });
+  }
+  setInterval(checkPrayers,20000);
+
+  /* ---------- شرائط الأذكار والصلاة على النبي ---------- */
+  (function initTickers(){
+    const azkarTrack = document.getElementById('zikrTrackAzkar');
+    const salatTrack = document.getElementById('zikrTrackSalat');
+    if(!azkarTrack || !salatTrack) return;
+
+    // شريط الأذكار (بدون الصلاة على النبي عشان ما تتكررش)
+    const azkarItems = AZKAR
+      .filter(z => !z.t.includes('صَلِّ') && !z.t.includes('صَلَّى'))
+      .map(z => `<span>${esc(z.t)}<em>${esc(z.s||'')}</em></span>`)
+      .join('');
+    azkarTrack.innerHTML = azkarItems + azkarItems;
+
+    // شريط الصلاة على النبي ﷺ
+    const salatItems = SALAT
+      .map(s => `<span>${esc(s)}</span>`)
+      .join('');
+    salatTrack.innerHTML = salatItems + salatItems + salatItems + salatItems;
+  })();
+
   /* ---------- Init ---------- */
   $('nameInput').value=S.name||'';
   renderPicker();renderDays();renderTasks();
+  renderAzkar();renderPrayers();
+
+  // Auto-refetch prayer times if a day has passed
+  if(S.prayers.address && S.prayers.date!==todayStr()){
+    (async()=>{
+      try{
+        const t=S.prayers.address==='موقعي الحالي'
+          ? null
+          : await fetchByAddress(S.prayers.address);
+        if(t) await saveTimes(t,S.prayers.address);
+      }catch(e){}
+    })();
+  }
+  setTimeout(checkPrayers,3000);
 })();
 </script>
 </body>
